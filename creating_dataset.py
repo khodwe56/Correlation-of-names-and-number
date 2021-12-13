@@ -7,6 +7,8 @@ import cv2
 import glob
 import logging
 
+logging.basicConfig(level=logging.INFO)
+
 
 class Dataset:
     def __init__(self, number_of_ids):
@@ -44,15 +46,14 @@ class Dataset:
             logging.error("Start co-ordinates for name should exist and have a x and y value in a tuple")
             exit(0)
 
-
         fake = Faker()
         names = []
         addresses = []
         ids = []
         memory = {0: True}
         for i in range(self.number_of_ids):
-            if i%50:
-                logging.info("{} images created successfully.".format(i))
+            if i % 50 == 0:
+                logging.info("{} images created successfully".format(i))
             name = fake.name()
             address = fake.address()
             id = 0
@@ -82,12 +83,14 @@ class Dataset:
                     abs(profile_photo_bottom_right_coordinates[1] - profile_photo_top_left_coordinates[0]),
                     abs(profile_photo_bottom_right_coordinates[0] - profile_photo_top_left_coordinates[1])))
                 img = cv2.imread(template_image_path)
-                img[profile_photo_bottom_right_coordinates[0]:profile_photo_top_left_coordinates[1],profile_photo_top_left_coordinates[0]:profile_photo_bottom_right_coordinates[1]] = profile
+                img[profile_photo_bottom_right_coordinates[0]:profile_photo_top_left_coordinates[1],
+                profile_photo_top_left_coordinates[0]:profile_photo_bottom_right_coordinates[1]] = profile
                 font = font
                 color = font_color
                 cv2.putText(img, text=names[i], org=name_start_coordinates, fontFace=font, fontScale=name_font_scale,
                             color=color, thickness=font_thickness)
-                cv2.putText(img, text=ids[i], org=id_start_coordinates, fontFace=font, fontScale=id_font_scale, color=color,
+                cv2.putText(img, text=ids[i], org=id_start_coordinates, fontFace=font, fontScale=id_font_scale,
+                            color=color,
                             thickness=font_thickness)
                 cv2.putText(img, text=addresses[i], org=address_start_coordinates, fontFace=font,
                             fontScale=address_font_scale, color=color, thickness=font_thickness)
@@ -95,4 +98,3 @@ class Dataset:
             except FileNotFoundError:
                 logging.error("Error in Processing file..")
                 exit(0)
-

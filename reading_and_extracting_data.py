@@ -1,10 +1,10 @@
 import cv2
 import pytesseract
-from pytesseract import Output
 import glob
 import pandas as pd
 import logging
 
+logging.basicConfig(level=logging.INFO)
 
 class DataExtraction:
     def extract_data(self, files_path="dataset", output_filename="output.csv"):
@@ -12,12 +12,9 @@ class DataExtraction:
         name_to_identity_map = {}
         cnt = 0
         for path in paths:
-            if cnt % 50:
-                logging.info("{} images created successfully.".format(i))
+            if cnt % 50 == 0:
+                logging.info("{} images extracted successfully.".format(cnt))
             cnt += 1
-            if "diff" in path:
-                continue
-
             img = cv2.imread(path)
             try:
                 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -43,8 +40,14 @@ class DataExtraction:
                     elif "Id:" in i:
                         ans = i.split(":")
                         identity.append(ans[1].strip())
-            for i in range(len(identity)):
-                name_to_identity_map[identity[i]] = name[i]
+
+            for j in range(len(identity)):
+                try:
+                    name_to_identity_map[identity[j]] = name[j]
+                except IndexError:
+                    logging.error(name)
+                    logging.error(identity)
+                    logging.error("Issue with file img_{}".format(path.split("/")[-1].split("_")[-1]))
         df = pd.DataFrame(list(name_to_identity_map.items()))
         df.columns = ["ID", "NAME"]
         df.to_csv(output_filename, index=False)
