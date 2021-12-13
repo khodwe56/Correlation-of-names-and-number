@@ -6,8 +6,8 @@ from reading_and_extracting_data import DataExtraction
 
 def main():
     ## Creates a dataset
-    # d = Dataset(300)
-    # d.create_fake_data()
+    d = Dataset(300)
+    d.create_fake_data()
 
     ## Run Data Extraction algorithm
     dea = DataExtraction()
