@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>creating_dataset.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>creating_dataset.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">faker</span> <span class="kn">import</span> <span class="n">Faker</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">logging</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">Dataset</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number_of_ids</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">number_of_ids</span> <span class="o">=</span> <span class="n">number_of_ids</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">create_fake_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile_img_path</span><span class="o">=</span><span class="s2">&quot;profiles&quot;</span><span class="p">,</span> <span class="n">template_image_path</span><span class="o">=</span><span class="s2">&quot;templates/img.png&quot;</span><span class="p">,</span>
+                         <span class="n">name_start_coordinates</span><span class="o">=</span><span class="p">(</span><span class="mi">516</span><span class="p">,</span> <span class="mi">336</span><span class="p">),</span> <span class="n">address_start_coordinates</span><span class="o">=</span><span class="p">(</span><span class="mi">554</span><span class="p">,</span> <span class="mi">502</span><span class="p">),</span>
+                         <span class="n">id_start_coordinates</span><span class="o">=</span><span class="p">(</span><span class="mi">466</span><span class="p">,</span> <span class="mi">421</span><span class="p">),</span> <span class="n">profile_photo_top_left_coordinates</span><span class="o">=</span><span class="p">(</span><span class="mi">35</span><span class="p">,</span> <span class="mi">602</span><span class="p">),</span>
+                         <span class="n">profile_photo_bottom_right_coordinates</span><span class="o">=</span><span class="p">(</span><span class="mi">245</span><span class="p">,</span> <span class="mi">389</span><span class="p">),</span> <span class="n">output_dataset</span><span class="o">=</span><span class="s2">&quot;dataset&quot;</span><span class="p">,</span>
+                         <span class="n">font</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_PLAIN</span><span class="p">,</span> <span class="n">name_font_scale</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">id_font_scale</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">address_font_scale</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                         <span class="n">font_color</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="n">font_thickness</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">start_index_of_image</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">profile_img_path</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">profile_img_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_dataset</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">output_dataset</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">template_image_path</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;You should have a template folder with template image named img.png in it.&quot;</span><span class="p">)</span>
+            <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name_start_coordinates</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">name_start_coordinates</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Start co-ordinates for name should exist and have a x and y value in a tuple&quot;</span><span class="p">)</span>
+            <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">address_start_coordinates</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">address_start_coordinates</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Start co-ordinates for name should exist and have a x and y value in a tuple&quot;</span><span class="p">)</span>
+            <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">id_start_coordinates</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">id_start_coordinates</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Start co-ordinates for name should exist and have a x and y value in a tuple&quot;</span><span class="p">)</span>
+            <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name_start_coordinates</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">name_start_coordinates</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Start co-ordinates for name should exist and have a x and y value in a tuple&quot;</span><span class="p">)</span>
+            <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">profile_photo_top_left_coordinates</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">profile_photo_top_left_coordinates</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Start co-ordinates for name should exist and have a x and y value in a tuple&quot;</span><span class="p">)</span>
+            <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">profile_photo_bottom_right_coordinates</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">profile_photo_bottom_right_coordinates</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Start co-ordinates for name should exist and have a x and y value in a tuple&quot;</span><span class="p">)</span>
+            <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+
+        <span class="n">fake</span> <span class="o">=</span> <span class="n">Faker</span><span class="p">()</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">addresses</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">memory</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_ids</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span><span class="o">%</span><span class="mi">50</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> images created successfully.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">fake</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
+            <span class="n">address</span> <span class="o">=</span> <span class="n">fake</span><span class="o">.</span><span class="n">address</span><span class="p">()</span>
+            <span class="nb">id</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">memory</span><span class="p">:</span>
+                <span class="nb">id</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">100000000000</span><span class="p">,</span> <span class="mi">999999999999</span><span class="p">)</span>
+            <span class="n">memory</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="nb">id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">j</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">%</span> <span class="mi">4</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">res</span> <span class="o">+=</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nb">id</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">res</span> <span class="o">+=</span> <span class="nb">id</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">addresses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">address</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">profile_img_path</span> <span class="o">+</span> <span class="s1">&#39;/img_</span><span class="si">{}</span><span class="s1">.png&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">start_index_of_image</span><span class="p">)):</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://thispersondoesnotexist.com/image&quot;</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">profile_img_path</span> <span class="o">+</span> <span class="s1">&#39;/img_</span><span class="si">{}</span><span class="s1">.png&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">start_index_of_image</span><span class="p">),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out_file</span><span class="p">:</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">raw</span><span class="p">,</span> <span class="n">out_file</span><span class="p">)</span>
+                <span class="k">del</span> <span class="n">r</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_ids</span><span class="p">):</span>
+            <span class="n">profile</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">profile_img_path</span> <span class="o">+</span> <span class="s2">&quot;/img_</span><span class="si">{}</span><span class="s2">.png&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">start_index_of_image</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">profile</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="p">(</span>
+                    <span class="nb">abs</span><span class="p">(</span><span class="n">profile_photo_bottom_right_coordinates</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">profile_photo_top_left_coordinates</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                    <span class="nb">abs</span><span class="p">(</span><span class="n">profile_photo_bottom_right_coordinates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">profile_photo_top_left_coordinates</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">template_image_path</span><span class="p">)</span>
+                <span class="n">img</span><span class="p">[</span><span class="n">profile_photo_bottom_right_coordinates</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">profile_photo_top_left_coordinates</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">profile_photo_top_left_coordinates</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">profile_photo_bottom_right_coordinates</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">profile</span>
+                <span class="n">font</span> <span class="o">=</span> <span class="n">font</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="n">font_color</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">org</span><span class="o">=</span><span class="n">name_start_coordinates</span><span class="p">,</span> <span class="n">fontFace</span><span class="o">=</span><span class="n">font</span><span class="p">,</span> <span class="n">fontScale</span><span class="o">=</span><span class="n">name_font_scale</span><span class="p">,</span>
+                            <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="n">font_thickness</span><span class="p">)</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">ids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">org</span><span class="o">=</span><span class="n">id_start_coordinates</span><span class="p">,</span> <span class="n">fontFace</span><span class="o">=</span><span class="n">font</span><span class="p">,</span> <span class="n">fontScale</span><span class="o">=</span><span class="n">id_font_scale</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+                            <span class="n">thickness</span><span class="o">=</span><span class="n">font_thickness</span><span class="p">)</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">addresses</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">org</span><span class="o">=</span><span class="n">address_start_coordinates</span><span class="p">,</span> <span class="n">fontFace</span><span class="o">=</span><span class="n">font</span><span class="p">,</span>
+                            <span class="n">fontScale</span><span class="o">=</span><span class="n">address_font_scale</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="n">font_thickness</span><span class="p">)</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">output_dataset</span> <span class="o">+</span> <span class="s2">&quot;/img_</span><span class="si">{}</span><span class="s2">.png&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">start_index_of_image</span><span class="p">),</span> <span class="n">img</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error in Processing file..&quot;</span><span class="p">)</span>
+                <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
