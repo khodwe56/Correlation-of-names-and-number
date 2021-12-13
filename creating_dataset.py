@@ -52,8 +52,8 @@ class Dataset:
         ids = []
         memory = {0: True}
         for i in range(self.number_of_ids):
-            if i % 50 == 0:
-                logging.info("{} images created successfully".format(i))
+            if (i+1) % 50 == 0:
+                logging.info("{} images created successfully".format(i+1))
             name = fake.name()
             address = fake.address()
             id = 0

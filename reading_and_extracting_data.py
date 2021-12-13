@@ -10,7 +10,7 @@ class DataExtraction:
     def extract_data(self, files_path="dataset", output_filename="output.csv"):
         paths = glob.glob(files_path + "/*")
         name_to_identity_map = {}
-        cnt = 0
+        cnt = 1
         for path in paths:
             if cnt % 50 == 0:
                 logging.info("{} images extracted successfully.".format(cnt))
@@ -45,8 +45,6 @@ class DataExtraction:
                 try:
                     name_to_identity_map[identity[j]] = name[j]
                 except IndexError:
-                    logging.error(name)
-                    logging.error(identity)
                     logging.error("Issue with file img_{}".format(path.split("/")[-1].split("_")[-1]))
         df = pd.DataFrame(list(name_to_identity_map.items()))
         df.columns = ["ID", "NAME"]
