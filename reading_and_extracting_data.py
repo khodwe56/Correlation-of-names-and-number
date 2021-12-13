@@ -5,13 +5,14 @@ import glob
 import pandas as pd
 import logging
 
+
 class DataExtraction:
     def extract_data(self, files_path="dataset", output_filename="output.csv"):
         paths = glob.glob(files_path + "/*")
         name_to_identity_map = {}
         cnt = 0
         for path in paths:
-            if cnt%50:
+            if cnt % 50:
                 logging.info("{} images created successfully.".format(i))
             cnt += 1
             if "diff" in path:
@@ -45,5 +46,5 @@ class DataExtraction:
             for i in range(len(identity)):
                 name_to_identity_map[identity[i]] = name[i]
         df = pd.DataFrame(list(name_to_identity_map.items()))
-        df.columns = ["ID","NAME"]
-        df.to_csv(output_filename,index=False)
+        df.columns = ["ID", "NAME"]
+        df.to_csv(output_filename, index=False)

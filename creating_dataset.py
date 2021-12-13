@@ -94,4 +94,5 @@ class Dataset:
                 cv2.imwrite(output_dataset + "/img_{}.png".format(i + start_index_of_image), img)
             except FileNotFoundError:
                 logging.error("Error in Processing file..")
+                exit(0)
 
