@@ -27,16 +27,22 @@ class Dataset:
             exit(0)
         if not name_start_coordinates or len(name_start_coordinates) != 2:
             logging.error("Start co-ordinates for name should exist and have a x and y value in a tuple")
+            exit(0)
         if not address_start_coordinates or len(address_start_coordinates) != 2:
             logging.error("Start co-ordinates for name should exist and have a x and y value in a tuple")
+            exit(0)
         if not id_start_coordinates or len(id_start_coordinates) != 2:
             logging.error("Start co-ordinates for name should exist and have a x and y value in a tuple")
+            exit(0)
         if not name_start_coordinates or len(name_start_coordinates) != 2:
             logging.error("Start co-ordinates for name should exist and have a x and y value in a tuple")
+            exit(0)
         if not profile_photo_top_left_coordinates or len(profile_photo_top_left_coordinates) != 2:
             logging.error("Start co-ordinates for name should exist and have a x and y value in a tuple")
+            exit(0)
         if not profile_photo_bottom_right_coordinates or len(profile_photo_bottom_right_coordinates) != 2:
             logging.error("Start co-ordinates for name should exist and have a x and y value in a tuple")
+            exit(0)
 
 
         fake = Faker()
@@ -69,17 +75,21 @@ class Dataset:
                 del r
         for i in range(self.number_of_ids):
             profile = cv2.imread(profile_img_path + "/img_{}.png".format(i + start_index_of_image))
-            profile = cv2.resize(profile, (
-                abs(profile_photo_bottom_right_coordinates[1] - profile_photo_top_left_coordinates[0]),
-                abs(profile_photo_bottom_right_coordinates[0] - profile_photo_top_left_coordinates[1])))
-            img = cv2.imread(template_image_path)
-            img[profile_photo_bottom_right_coordinates[0]:profile_photo_top_left_coordinates[1],profile_photo_top_left_coordinates[0]:profile_photo_bottom_right_coordinates[1]] = profile
-            font = font
-            color = font_color
-            cv2.putText(img, text=names[i], org=name_start_coordinates, fontFace=font, fontScale=name_font_scale,
-                        color=color, thickness=font_thickness)
-            cv2.putText(img, text=ids[i], org=id_start_coordinates, fontFace=font, fontScale=id_font_scale, color=color,
-                        thickness=font_thickness)
-            cv2.putText(img, text=addresses[i], org=address_start_coordinates, fontFace=font,
-                        fontScale=address_font_scale, color=color, thickness=font_thickness)
-            cv2.imwrite(output_dataset + "/img_{}.png".format(i + start_index_of_image), img)
+            try:
+                profile = cv2.resize(profile, (
+                    abs(profile_photo_bottom_right_coordinates[1] - profile_photo_top_left_coordinates[0]),
+                    abs(profile_photo_bottom_right_coordinates[0] - profile_photo_top_left_coordinates[1])))
+                img = cv2.imread(template_image_path)
+                img[profile_photo_bottom_right_coordinates[0]:profile_photo_top_left_coordinates[1],profile_photo_top_left_coordinates[0]:profile_photo_bottom_right_coordinates[1]] = profile
+                font = font
+                color = font_color
+                cv2.putText(img, text=names[i], org=name_start_coordinates, fontFace=font, fontScale=name_font_scale,
+                            color=color, thickness=font_thickness)
+                cv2.putText(img, text=ids[i], org=id_start_coordinates, fontFace=font, fontScale=id_font_scale, color=color,
+                            thickness=font_thickness)
+                cv2.putText(img, text=addresses[i], org=address_start_coordinates, fontFace=font,
+                            fontScale=address_font_scale, color=color, thickness=font_thickness)
+                cv2.imwrite(output_dataset + "/img_{}.png".format(i + start_index_of_image), img)
+            except FileNotFoundError:
+                logging.error("Error in Processing file..")
+
